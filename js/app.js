@@ -3,14 +3,17 @@ var Location = function(data) {
 	var self = this;
 
 	this.visible = ko.observable(true);
+	this.isSelected = ko.observable(false);
 	this.name = ko.observable(data.name);
 	this.title = ko.observable(data.title);
 	this.phone = ko.observable(data.phone);
 	this.type = ko.observable(data.type);
 	this.position = ko.observable(data.position);
+	this.parentMap = map;
+	this.parentMapOriginalCenter = map.getCenter();
 	this.marker = new google.maps.Marker({
 		position: data.position,
-		map: map,
+		map: this.parentMap,
 		title: data.title,
 		koObject: this
 	});
@@ -19,30 +22,17 @@ var Location = function(data) {
 		ViewModel.changeLocation(this.koObject);
 	});
 
-	mapOrginalPostion: null,
-
-	this.doClick = function() {
-		if (self.marker.getAnimation() != null) {
+	this.doClick = function(forceDisable) {
+		if (self.marker.getAnimation() != null || forceDisable) {
 			self.marker.setAnimation(null);
-			map.setZoom(15);
-			if (mapOrginalPostion != null) {
-				map.setCenter(mapOrginalPostion);
-			}
+			self.isSelected(false);
+			self.parentMap.setZoom(15);
+			self.parentMap.setCenter(self.parentMapOriginalCenter);
   		} else {
     		self.marker.setAnimation(google.maps.Animation.BOUNCE);
-			map.setZoom(16);
-			mapOrginalPostion = map.getCenter();
-			map.setCenter(self.position());
-		}
-
-	};
-
-	this.disableAnimation = function() {
-		if (self.marker.getAnimation() != null) {
-			self.marker.setAnimation(null);
-			if (mapOrginalPostion != null) {
-				map.setCenter(mapOrginalPostion);
-			}
+    		self.isSelected(true);
+			self.parentMap.setZoom(16);
+			self.parentMap.setCenter(self.position());
 		}
 	};
 
@@ -68,7 +58,7 @@ var ViewModel = {
 	changeLocation: function(locationObject) {
 		if (ViewModel.currentLocation() != locationObject) {
 			if (ViewModel.currentLocation() != null) {
-				ViewModel.currentLocation().disableAnimation();
+				ViewModel.currentLocation().doClick(true);
 			}
 			ViewModel.currentLocation(locationObject);
 		}
