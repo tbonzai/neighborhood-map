@@ -1,0 +1,19 @@
+html,
+body,
+.row,
+.container,
+#map-canvas,
+.col-md-8 {
+	height: 100%;
+}
+
+#map-canvas {
+	width: 100%;
+}
+
+#search {
+	width: 100%;
+	margin-top: 15px;
+}
+
+.selected {}

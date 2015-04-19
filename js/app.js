@@ -1,5 +1,5 @@
 
-var Restaurant = function(data) {
+var Location = function(data) {
 	var self = this;
 
 	this.visible = ko.observable(true);
@@ -16,7 +16,7 @@ var Restaurant = function(data) {
 	});
 
 	google.maps.event.addListener(this.marker, 'click', function() {
-		ViewModel.changeRestaurant(this.koObject);
+		ViewModel.changeLocation(this.koObject);
 	});
 
 	this.doClick = function() {
@@ -44,49 +44,49 @@ var Restaurant = function(data) {
 var ViewModel = {
 	self: this,
 
-	restaurantList: ko.observableArray([]),
+	locationList: ko.observableArray([]),
 
-	currentRestaurant: ko.observable(null),
+	currentLocation: ko.observable(null),
 
 	init: function() {
-		Restaurants.forEach(function(restaurantItem) {
-			ViewModel.restaurantList.push(new Restaurant(restaurantItem));
+		Restaurants.forEach(function(locationItem) {
+			ViewModel.locationList.push(new Location(locationItem));
 		});
-		currentRestaurant: ko.observable(ViewModel.restaurantList()[0]);
+		currentLocation: ko.observable(ViewModel.locationList()[0]);
 	},
 
-	changeRestaurant: function(restaurantObject) {
-		if (ViewModel.currentRestaurant() != restaurantObject) {
-			if (ViewModel.currentRestaurant() != null) {
-				ViewModel.currentRestaurant().disableAnimation();
+	changeLocation: function(locationObject) {
+		if (ViewModel.currentLocation() != locationObject) {
+			if (ViewModel.currentLocation() != null) {
+				ViewModel.currentLocation().disableAnimation();
 			}
-			ViewModel.currentRestaurant(restaurantObject);
+			ViewModel.currentLocation(locationObject);
 		}
-		ViewModel.currentRestaurant().doClick();
+		ViewModel.currentLocation().doClick();
 	}
 }
 
 var ViewModel_dodo = function() {
 	var self = this;
 
-	this.restaurantList = ko.observableArray([]);
+	this.locationList = ko.observableArray([]);
 
 	this.test = function() {
 		return 'Test Complete';
 	};
 
-	Restaurants.forEach(function(restaurantItem) {
-		self.restaurantList.push(new Restaurant(restaurantItem));
+	Restaurants.forEach(function(locationItem) {
+		self.locationList.push(new Restaurant(locationItem));
 	});
 
-	this.currentRestaurant = ko.observable(this.restaurantList()[0]);
+	this.currentLocation = ko.observable(this.locationList()[0]);
 
-	this.changeRestaurant = function(restaurantObject) {
-		if (self.currentRestaurant() != restaurantObject) {
-			self.currentRestaurant().disableAnimation();
-			self.currentRestaurant(restaurantObject);
+	this.changeLocation = function(locationObject) {
+		if (self.currentLocation() != locationObject) {
+			self.currentLocation().disableAnimation();
+			self.currentLocation(locationObject);
 		}
-		self.currentRestaurant().doClick();
+		self.currentLocation().doClick();
 	}
 }
 //ko.applyBindings(new ViewModel());

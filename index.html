@@ -1,31 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+	    <meta charset="UTF-8">
+	    <title>Neighborhood Restaurants</title>
 	</head>
 	<body>
-		<div><input id="search" type="search" placeholder="Search Restaurants" /></div>
-		<div class="row">
-			<div class="col-3">
-		        <ul data-bind="foreach: restaurantList">
-			    	<li data-bind="click: $parent.changeRestaurant, text: title"></li>
-		    	</ul>
+		<div class="container">
+			<div class="col-md-12"><input id="search" type="search" placeholder="Search Restaurants" /></div>
+			<div class="row">
+				<div class="col-md-4">
+			        <ul data-bind="foreach: locationList">
+				    	<li data-bind="click: $parent.changeLocation, text: title"></li>
+			    	</ul>
+				</div>
+				<div class="col-md-8">
+					<div id="map-canvas"></div>
+				</div>
 			</div>
-			<div class="col-7">
-				<div id="map-canvas"></div>
-			</div>
-<!--
-			<div style="clear:both;"></div>
--->
 		</div>
-		<style type="text/css">
-			html, body, .row, .col, #map-canvas { height: 100%; margin: 0; padding: 0;}
-			.col-3, .col-7 { height: 100%; display: inline-block;}
-			.col-3 {width: 30%;}
-			.col-7 {width: 65%;}
-			#map-canvas { width: 100%;}
-			#search {width: 95%; margin-top: 15px;}
-		</style>
-		<script type="text/javascript" src="js/models/landmarks.js"></script>
+		<link rel="stylesheet" href="css/lib/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/models/restaurants.js"></script>
 	    <script src="js/lib/knockout-3.3.0.js"></script>
 	    <script src="js/app.js"></script>
