@@ -5,12 +5,12 @@
 	    <title>Neighborhood Restaurants</title>
 	</head>
 	<body>
-		<div class="container">
+		<div class="container-fluid">
 			<div class="col-md-12"><input id="search" type="search" placeholder="Search Restaurants" /></div>
 			<div class="row">
 				<div class="col-md-4">
-			        <ul data-bind="foreach: locationList">
-				    	<li data-bind="click: $parent.changeLocation, text: title"></li>
+			        <ul class="list-group" data-bind="foreach: locationList">
+				    	<li class="list-group-item" data-bind="click: $parent.changeLocation, text: title"></li>
 			    	</ul>
 				</div>
 				<div class="col-md-8">
@@ -19,6 +19,7 @@
 			</div>
 		</div>
 		<link rel="stylesheet" href="css/lib/bootstrap.min.css">
+		<link rel="stylesheet" href="css/lib/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/style.css">
         <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>

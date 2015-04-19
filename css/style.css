@@ -2,6 +2,7 @@ html,
 body,
 .row,
 .container,
+.container-fluid,
 #map-canvas,
 .col-md-8 {
 	height: 100%;

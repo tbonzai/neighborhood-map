@@ -19,20 +19,30 @@ var Location = function(data) {
 		ViewModel.changeLocation(this.koObject);
 	});
 
+	mapOrginalPostion: null,
+
 	this.doClick = function() {
 		if (self.marker.getAnimation() != null) {
 			self.marker.setAnimation(null);
 			map.setZoom(15);
+			if (mapOrginalPostion != null) {
+				map.setCenter(mapOrginalPostion);
+			}
   		} else {
     		self.marker.setAnimation(google.maps.Animation.BOUNCE);
 			map.setZoom(16);
+			mapOrginalPostion = map.getCenter();
+			map.setCenter(self.position());
 		}
-		map.setCenter(self.position());
+
 	};
 
 	this.disableAnimation = function() {
 		if (self.marker.getAnimation() != null) {
 			self.marker.setAnimation(null);
+			if (mapOrginalPostion != null) {
+				map.setCenter(mapOrginalPostion);
+			}
 		}
 	};
 
@@ -49,7 +59,7 @@ var ViewModel = {
 	currentLocation: ko.observable(null),
 
 	init: function() {
-		Restaurants.forEach(function(locationItem) {
+		Restaurants.forEach(function(locationItem	) {
 			ViewModel.locationList.push(new Location(locationItem));
 		});
 		currentLocation: ko.observable(ViewModel.locationList()[0]);
