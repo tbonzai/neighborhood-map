@@ -1,5 +1,5 @@
 
-var Location = function(data) {
+var Location = function(data, mapObject) {
 	var self = this;
 
 	this.visible = ko.observable(true);
@@ -9,14 +9,43 @@ var Location = function(data) {
 	this.phone = ko.observable(data.phone);
 	this.type = ko.observable(data.type);
 	this.position = ko.observable(data.position);
-	this.parentMap = map;
-	this.parentMapOriginalCenter = map.getCenter();
+	this.parentMap = mapObject;
+	this.parentMapOriginalCenter = mapObject.getCenter();
 	this.marker = new google.maps.Marker({
 		position: data.position,
 		map: this.parentMap,
 		title: data.title,
 		koObject: this
 	});
+	this.yelpData = null;
+
+	$.ajax({
+		url: 'http://api.yelp.com/phone_search',
+		type: 'GET',
+		dataType: 'jsonp',
+		data: {
+			phone: self.phone,
+			ywsid: 'xuFaz9OB2ls4CoiJXqqqCA'
+		},
+		error: function(e){
+			console.log('error');
+			console.log(e);
+		},
+		success: function(data) {
+			console.log('success');
+			console.log(data);
+		}
+	})
+	.done(function() {
+		console.log("done");
+	})
+	.fail(function() {
+		console.log("fail");
+	})
+	.always(function() {
+		console.log("always");
+	});
+
 
 	google.maps.event.addListener(this.marker, 'click', function() {
 		ViewModel.changeLocation(this.koObject);
@@ -48,9 +77,9 @@ var ViewModel = {
 
 	currentLocation: ko.observable(null),
 
-	init: function() {
-		Restaurants.forEach(function(locationItem	) {
-			ViewModel.locationList.push(new Location(locationItem));
+	init: function(mapObject) {
+		Restaurants.forEach(function(locationItem) {
+			ViewModel.locationList.push(new Location(locationItem, mapObject));
 		});
 		currentLocation: ko.observable(ViewModel.locationList()[0]);
 	},
@@ -66,27 +95,16 @@ var ViewModel = {
 	}
 }
 
-var ViewModel_dodo = function() {
-	var self = this;
-
-	this.locationList = ko.observableArray([]);
-
-	this.test = function() {
-		return 'Test Complete';
+$(function() {
+	var mapOptions = {
+		center: {lat: 29.5978467, lng: -95.6099158},
+		zoom: 15,
+		mapTypeId: google.maps.MapTypeId.HYBRID
 	};
-
-	Restaurants.forEach(function(locationItem) {
-		self.locationList.push(new Restaurant(locationItem));
-	});
-
-	this.currentLocation = ko.observable(this.locationList()[0]);
-
-	this.changeLocation = function(locationObject) {
-		if (self.currentLocation() != locationObject) {
-			self.currentLocation().disableAnimation();
-			self.currentLocation(locationObject);
-		}
-		self.currentLocation().doClick();
-	}
-}
-//ko.applyBindings(new ViewModel());
+	var mapObject = new google.maps.Map(
+		document.getElementById('map-canvas'),
+		mapOptions
+	);
+	ko.applyBindings(ViewModel);
+	ViewModel.init(mapObject);
+});
