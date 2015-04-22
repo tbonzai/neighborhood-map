@@ -6,11 +6,12 @@
 	</head>
 	<body>
 		<div class="container-fluid">
+			<div class="" role="alert" data-bind="html: errorMessage, css:{ 'alert alert-danger alert-dismissible': errorExists}"></div>
 			<div class="col-md-12"><input id="search" type="search" placeholder="Search Restaurants" /></div>
 			<div class="row">
 				<div class="col-md-4">
 			        <ul class="list-group" data-bind="foreach: locationList">
-				    	<li class="list-group-item" data-bind="click: $parent.changeLocation, text: title, css:{'list-group-item-success': isSelected() === true}		"></li>
+				    	<li class="list-group-item" data-bind="click: $parent.changeLocation, text: title, css:{'list-group-item-success': isSelected}"></li>
 			    	</ul>
 				</div>
 				<div class="col-md-8">

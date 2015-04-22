@@ -1,24 +1,22 @@
 
-var Location = function(data, mapObject) {
+var Location = function(locationData) {
 	var self = this;
 
 	this.visible = ko.observable(true);
 	this.isSelected = ko.observable(false);
-	this.name = ko.observable(data.name);
-	this.title = ko.observable(data.title);
-	this.phone = ko.observable(data.phone);
-	this.type = ko.observable(data.type);
-	this.position = ko.observable(data.position);
-	this.parentMap = mapObject;
+	this.name = ko.observable(locationData.name);
+	this.title = ko.observable(locationData.title);
+	this.phone = ko.observable(locationData.phone);
+	this.type = ko.observable(locationData.type);
+	this.position = locationData.position;
 	this.parentMapOriginalCenter = mapObject.getCenter();
 	this.marker = new google.maps.Marker({
-		position: data.position,
-		map: this.parentMap,
-		title: data.title,
+		position: locationData.position,
+		map: mapObject,
+		title: locationData.title,
 		koObject: this
 	});
 	this.yelpData = null;
-
 	$.ajax({
 		url: 'http://api.yelp.com/phone_search',
 		type: 'GET',
@@ -29,25 +27,24 @@ var Location = function(data, mapObject) {
 		},
 		error: function(e){
 			console.log('error');
-			console.log(e);
 		},
 		success: function(data) {
-			console.log('success');
-			console.log(data);
+//			console.log('success');
+//			console.log(data);
 		}
 	})
 	.done(function() {
-		console.log("done");
+//		console.log("done");
 	})
 	.fail(function() {
-		console.log("fail");
+//		console.log("fail");
 	})
 	.always(function() {
-		console.log("always");
+//		console.log("always");
 	});
 
 
-	google.maps.event.addListener(this.marker, 'click', function() {
+	google.maps.event.addListener(self.marker, 'click', function() {
 		ViewModel.changeLocation(this.koObject);
 	});
 
@@ -55,45 +52,58 @@ var Location = function(data, mapObject) {
 		if (self.marker.getAnimation() != null || forceDisable) {
 			self.marker.setAnimation(null);
 			self.isSelected(false);
-			self.parentMap.setZoom(15);
-			self.parentMap.setCenter(self.parentMapOriginalCenter);
+			mapObject.setZoom(15);
+			mapObject.setCenter(self.parentMapOriginalCenter);
   		} else {
     		self.marker.setAnimation(google.maps.Animation.BOUNCE);
     		self.isSelected(true);
-			self.parentMap.setZoom(16);
-			self.parentMap.setCenter(self.position());
+			mapObject.setZoom(16);
+			mapObject.setCenter(self.position);
 		}
 	};
 
 	this.showName = function() {
-		return this.name();
+		return self.name();
 	};
 };
 
-var ViewModel = {
-	self: this,
+var ViewModelFunc = function(){
 
-	locationList: ko.observableArray([]),
+	var	self = this;
 
-	currentLocation: ko.observable(null),
+	this.errorExists = ko.observable(false);
 
-	init: function(mapObject) {
-		Restaurants.forEach(function(locationItem) {
-			ViewModel.locationList.push(new Location(locationItem, mapObject));
-		});
-		currentLocation: ko.observable(ViewModel.locationList()[0]);
-	},
+	this.locationList = ko.observableArray([]);
 
-	changeLocation: function(locationObject) {
-		if (ViewModel.currentLocation() != locationObject) {
-			if (ViewModel.currentLocation() != null) {
-				ViewModel.currentLocation().doClick(true);
+	this.errorMessage = ko.observable(
+		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+			'<span aria-hidden="true">&times;</span>' +
+		'</button>' +
+		'<strong>Sorry!</strong> An issue occurred while trying to retrieve Yelp reviews.'
+	);
+
+	this.currentLocation = ko.observable(null);
+
+	Restaurants.forEach(function(locationItem) {
+		self.locationList.push(new Location(locationItem));
+	});
+
+	this.currentLocation = ko.observable(self.locationList()[0]);
+
+	this.changeLocation = function(locationObject) {
+		if (self.currentLocation() != locationObject) {
+			if (self.currentLocation() != null) {
+				self.currentLocation().doClick(true);
 			}
-			ViewModel.currentLocation(locationObject);
+			self.currentLocation(locationObject);
 		}
-		ViewModel.currentLocation().doClick();
+		self.currentLocation().doClick();
 	}
 }
+
+var ViewModel;
+var mapObject;
+
 
 $(function() {
 	var mapOptions = {
@@ -101,10 +111,11 @@ $(function() {
 		zoom: 15,
 		mapTypeId: google.maps.MapTypeId.HYBRID
 	};
-	var mapObject = new google.maps.Map(
+	mapObject = new google.maps.Map(
 		document.getElementById('map-canvas'),
 		mapOptions
 	);
+
+	ViewModel = new ViewModelFunc();
 	ko.applyBindings(ViewModel);
-	ViewModel.init(mapObject);
 });
