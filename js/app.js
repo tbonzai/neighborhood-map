@@ -5,10 +5,11 @@ var Location = function(locationData) {
 	this.isHidden = ko.observable(false);
 	this.isSelected = ko.observable(false);
 	this.name = ko.observable(locationData.name);
-	this.title = ko.observable(locationData.title);
 	this.yelpImgSrc = ko.observable('');
 	this.yelpAltText = ko.observable('');
 	this.yelpReviewText = ko.observable('');
+	this.yelpReviewCount = ko.observable('');
+	this.yelpReviewUrl = ko.observable('');
 	this.hasYelp = ko.computed(function() {
 		return self.yelpImgSrc().length > 0;
 	});
@@ -19,7 +20,7 @@ var Location = function(locationData) {
 	this.marker = new google.maps.Marker({
 		position: locationData.position,
 		map: mapObject,
-		title: locationData.title,
+		title: locationData.name,
 		koObject: this
 	});
 	this.yelpData = null;
@@ -37,11 +38,24 @@ var Location = function(locationData) {
 	})
 	.done(function(data) {
 		try {
-			if (data.message.code == 0 && data.businesses.length > 0) {
-				self.yelpImgSrc(data.businesses[0].rating_img_url_small);
-				self.yelpAltText('Yelp ' + data.businesses[0].avg_rating + ' star rating image.');
-				if (data.businesses[0].reviews.length > 0) {
-					self.yelpReviewText(data.businesses[0].reviews[0].text_excerpt);
+			var businessFound = false;
+			if (data.message.code == 0) {
+				// There may be more than one business. Loop on them and match the name.
+				for (var i = 0; i < data.businesses.length; i++) {
+					if (data.businesses[i].name.toLowerCase() === self.name().toLowerCase()) {
+						self.yelpImgSrc(data.businesses[i].rating_img_url_small);
+						self.yelpAltText('Yelp ' + data.businesses[i].avg_rating + ' star rating image.');
+						self.yelpReviewCount(data.businesses[i].review_count);
+						self.yelpReviewUrl(data.businesses[i].url);
+						if (data.businesses[i].reviews.length > 0) {
+							self.yelpReviewText(data.businesses[i].reviews[0].text_excerpt);
+						}
+						businessFound = true;
+						break;
+					}
+				}
+				if (businessFound === false) {
+					self.doYelpError();
 				}
 			} else {
 				self.doYelpError();
@@ -75,6 +89,7 @@ var Location = function(locationData) {
 			mapObject.setZoom(16);
 			mapObject.setCenter(self.position);
 		}
+		return true;
 	};
 };
 
@@ -107,7 +122,7 @@ var ViewModelFunc = function(){
 		var itemTitle;
 		var itemType;
 		for (var i = 0; i < self.locationList().length; i++) {
-			itemTitle = self.locationList()[i].title().toLowerCase();
+			itemTitle = self.locationList()[i].name().toLowerCase();
 			itemType = self.locationList()[i].type().toLowerCase();
 			if (itemTitle.indexOf(searchTarget) > -1 || itemType.indexOf(searchTarget) > -1) {
 				self.locationList()[i].isHidden(false);
@@ -129,6 +144,7 @@ var ViewModelFunc = function(){
 			self.currentLocation(locationObject);
 		}
 		self.currentLocation().doClick();
+		return true;
 	}
 }
 

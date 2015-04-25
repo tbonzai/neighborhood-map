@@ -23,20 +23,24 @@
 				<div class="col-md-4">
 			        <ul class="list-group" data-bind="foreach: locationList">
 				    	<li class="list-group-item"
-				    		data-bind="click: $parent.changeLocation, attr: { title: yelpReviewText}
-				    		, css:{'list-group-item-success': isSelected, hidden: isHidden}"
+				    		data-bind="click: $parent.changeLocation,
+				    			css:{'list-group-item-success': isSelected, hidden: isHidden}"
 				    		title="">
-				    		<span data-bind="text: title"></span>
-				    		<span class="right" data-bind="if: hasYelp">
-				    			Yelp Rating: <img class="img-responsive"
+				    		<span data-bind="text: name"></span>
+				    		<span class="right" data-bind="if: hasYelp, attr: { title: yelpReviewText}" title="">
+				    			<span data-bind="text: yelpReviewCount"></span> Reviews
+				    			<br>
+				    			<a data-bind="attr: { href: yelpReviewUrl}" href="" target="_blank">
+				    			<img class="right img-responsive"
 				    				data-bind="attr: { src: yelpImgSrc, alt: yelpAltText}"
 				    				src="" alt="Rating from Yelp."
-				    				title="" />
+				    				title="" /></a>
 				    		</span>
 				    	</li>
 			    	</ul>
 				</div>
 				<div class="col-md-8">
+					<div class="right">Reviews by <img src="img/yelp_logo_100x50.png"></div>
 					<div id="map-canvas"></div>
 				</div>
 			</div>
