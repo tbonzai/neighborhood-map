@@ -1,15 +1,15 @@
 html,
 body,
-.row,
+.full-row,
 .container,
 .container-fluid,
-#map-canvas,
 .col-md-8 {
 	height: 100%;
 }
 
 #map-canvas {
 	width: 100%;
+	height: 100%;
 }
 
 #search {
@@ -17,4 +17,10 @@ body,
 	margin-top: 15px;
 }
 
-.selected {}
+.hidden {
+	display: none;
+}
+
+.right {
+	float: right;
+}
