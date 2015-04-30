@@ -14,7 +14,7 @@ body,
 
 #search {
 	width: 100%;
-	margin-top: 15px;
+	margin: 15px 5px;
 }
 
 .hidden {
@@ -23,4 +23,8 @@ body,
 
 .right {
 	float: right;
+}
+
+.left {
+	float: left;
 }
