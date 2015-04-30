@@ -16,7 +16,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12"><input id="search" data-bind="event: { keyup: doSearch}"
+				<div class="col-md-12"><input id="search" data-bind="event:{ keyup: doSearch}"
 					type="search" placeholder="Search Restaurants by Name or Type (e.g. mexican, italian)" /></div>
 			</div>
 			<div class="row full-row">
@@ -24,15 +24,15 @@
 			        <ul class="list-group" data-bind="foreach: locationList">
 				    	<li class="list-group-item"
 				    		data-bind="click: $parent.changeLocation,
-				    			css:{'list-group-item-success': isSelected, hidden: isHidden}"
+				    			css:{ 'list-group-item-success': isSelected, hidden: isHidden}"
 				    		title="">
 				    		<span data-bind="text: name"></span>
-				    		<span class="right" data-bind="if: hasYelp, attr: { title: yelpReviewText}" title="">
+				    		<span class="right" data-bind="if: hasYelp, attr:{ title: yelpReviewText}" title="">
 				    			<span data-bind="text: yelpReviewCount"></span> Reviews
 				    			<br>
-				    			<a data-bind="attr: { href: yelpReviewUrl}" href="" target="_blank">
+				    			<a data-bind="attr:{ href: yelpReviewUrl}" href="" target="_blank">
 				    			<img class="right img-responsive"
-				    				data-bind="attr: { src: yelpImgSrc, alt: yelpAltText}"
+				    				data-bind="attr:{ src: yelpImgSrc, alt: yelpAltText}"
 				    				src="" alt="Rating from Yelp."
 				    				title="" /></a>
 				    		</span>
